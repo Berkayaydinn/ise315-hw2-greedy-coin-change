@@ -10,7 +10,7 @@ import sys
 
 def parse_coin_list(coin_text):
     # I convert something like "25,10,5,1" into [25, 10, 5, 1]
-    # I also remove spaces because students (including me) always type spaces randomly.
+    # I also remove spaces because users (including me :)) always type spaces randomly.
     cleaned = coin_text.replace(" ", "")
     if cleaned == "":
         return []
@@ -50,7 +50,7 @@ def greedy_largest_first(coin_set, target_value):
     # Strategy 1:
     # Always take the largest coin that still fits in the remaining value.
     remaining = target_value
-    picked = []
+    picked_vals = []
 
     # I loop until remaining becomes 0 because that means exact change is reached.
     while remaining > 0:
@@ -59,7 +59,7 @@ def greedy_largest_first(coin_set, target_value):
         # I scan coins from largest to smallest (coin_set is already sorted desc).
         for c in coin_set:
             if c <= remaining:
-                picked.append(c)
+                picked_vals.append(c)
                 remaining -= c
                 took_something = True
                 # I break because greedy means I commit to the first (largest) fit.
@@ -70,15 +70,15 @@ def greedy_largest_first(coin_set, target_value):
             # (This can happen when coin set doesn't include 1, for example.)
             return None
 
-    return picked
+    return picked_vals
 
 
 def greedy_closest_to_half(coin_set, target_value):
     # Strategy 2:
     # At each step I pick the coin closest to (remaining / 2).
-    # Why? Because it's trying to "balance" the remaining amount instead of going all-in on large coins.
+    # Because it's trying to "balance" the remaining amount instead of going all-in on large coins.
     remaining = target_value
-    picked = []
+    picked_vals = []
 
     while remaining > 0:
         half_point = remaining / 2.0
@@ -100,19 +100,18 @@ def greedy_closest_to_half(coin_set, target_value):
         if best_coin is None:
             return None
 
-        picked.append(best_coin)
+        picked_vals.append(best_coin)
         remaining -= best_coin
 
-    return picked
+    return picked_vals
 
 
 def score_remainder_quality(coin_set, remainder_amount):
     # This helper is for Strategy 3.
     # The idea: I want the remainder to be "friendly" for the next step.
     # Homework says: remainder should be divisible by the largest possible denomination.
-    #
     # So I compute:
-    #   best_divisor = max coin d in coin_set such that remainder_amount % d == 0
+    # best_divisor = max coin d in coin_set such that remainder_amount % d == 0
     # If none divides it (except maybe 1), then score becomes small.
     best_divisor = 0
     for d in coin_set:
@@ -129,7 +128,7 @@ def greedy_max_remainder(coin_set, target_value):
     # Try each coin choice, look at the remainder, and prefer leaving a remainder divisible
     # by the largest denomination possible (so next step can use big coins cleanly).
     remaining = target_value
-    picked = []
+    picked_vals = []
 
     while remaining > 0:
         best_coin = None
@@ -156,10 +155,10 @@ def greedy_max_remainder(coin_set, target_value):
         if best_coin is None:
             return None
 
-        picked.append(best_coin)
+        picked_vals.append(best_coin)
         remaining -= best_coin
 
-    return picked
+    return picked_vals
 
 
 def count_coins(picked_list):
@@ -185,8 +184,7 @@ def main():
     # I handle two input styles:
     # A) python3 change_maker.py 25,10,5,1 41
     # B) python3 change_maker.py input.txt
-    #
-    # I use sys.argv because it’s the simplest terminal interface without argparse.
+    # I use sys.argv because ı find it the simplest terminal interface.
     args = sys.argv[1:]
 
     if len(args) == 1:
@@ -212,8 +210,8 @@ def main():
         return
 
     print("Usage examples:")
-    print("  python3 change_maker.py 25,10,5,1 41")
-    print("  python3 change_maker.py input.txt")
+    print(">>python3 change_maker.py 25,10,5,1 41")
+    print(">>python3 change_maker.py input.txt")
     sys.exit(1)
 
 
